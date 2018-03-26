@@ -175,6 +175,25 @@ function dfsPatch(node, patches, indexObj) {
   })
 }
 
+function updateAttr(element, name, value) {
+  if (name === "key") {
+  } else if (name === "style") {
+    for (var i in clone(oldValue, value)) {
+      element[name][i] = value == null || value[i] == null ? "" : value[i]
+    }
+  } else {
+    if (typeof value === "function" || (name in element && name !== "list" && !isSVG)) {
+      element[name] = value == null ? "" : value
+    } else if (value != null && value !== false) {
+      element.setAttribute(name, value)
+    }
+
+    if (value == null || value === false) {
+      element.removeAttribute(name)
+    }
+  }
+}
+
 // test code
 
 let vdom1 = h("div", {}, [
