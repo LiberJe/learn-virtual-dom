@@ -142,8 +142,37 @@ function diffAttr(oldNode, newNode) {
 }
 
 
-function patch(node, patch) {
-  
+function patch(node, patches) {
+  let indexObj = { index: 0 }
+  dfsPatch(node, patches, indexObj)
+}
+
+function dfsPatch(node, patches, indexObj) {
+  let tempPatch = patches[indexObj.index]
+
+  node.childNodes.map((child, i) => {
+    indexObj.index++
+    dfsPatch(child, patches, indexObj)
+  })
+
+  tempPatch.map(patch => {
+    switch (patch.type) {
+      case REPLACE:
+        node.parentNode.replaceChild(patch.node.render(), node)
+        break
+      case REORDER:
+        // reorderChildren(node, currentPatch.moves)
+        break
+      case ATTR:
+        // setProps(node, currentPatch.props)
+        break
+      case TEXT:
+        node.textContent = patch.content
+        break
+      default:
+        throw new Error('Unknown patch type ' + currentPatch.type)
+    }
+  })
 }
 
 // test code
