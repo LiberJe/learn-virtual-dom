@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>learn-virtual-dom</title>
 </head>
 <body>
   <script src="../src/index.js"></script>
@@ -29,6 +29,8 @@
     let patches = diff(vdom1, vdom2)
 
     patch(root, patches)
+
+    document.body.appendChild(root)
   </script>
 </body>
 </html>
