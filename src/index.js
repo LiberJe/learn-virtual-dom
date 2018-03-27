@@ -150,12 +150,12 @@ function patch(node, patches) {
 function dfsPatch(node, patches, indexObj) {
   let tempPatch = patches[indexObj.index]
 
-  node.childNodes.map((child, i) => {
+  for (let i = 0; i < node.childNodes.length; i++) {
     indexObj.index++
-    dfsPatch(child, patches, indexObj)
-  })
+    dfsPatch(node.childNodes[i], patches, indexObj)
+  }
 
-  tempPatch.map(patch => {
+  tempPatch && tempPatch.map(patch => {
     switch (patch.type) {
       case REPLACE:
         node.parentNode.replaceChild(patch.node.render(), node)
@@ -164,7 +164,7 @@ function dfsPatch(node, patches, indexObj) {
         // reorderChildren(node, currentPatch.moves)
         break
       case ATTR:
-        // setProps(node, currentPatch.props)
+        updateAttr(node, tempPatch.attr)
         break
       case TEXT:
         node.textContent = patch.content
@@ -175,42 +175,38 @@ function dfsPatch(node, patches, indexObj) {
   })
 }
 
-function updateAttr(element, name, value) {
-  if (name === "key") {
-  } else if (name === "style") {
-    for (var i in clone(oldValue, value)) {
-      element[name][i] = value == null || value[i] == null ? "" : value[i]
-    }
-  } else {
-    if (typeof value === "function" || (name in element && name !== "list" && !isSVG)) {
-      element[name] = value == null ? "" : value
-    } else if (value != null && value !== false) {
-      element.setAttribute(name, value)
-    }
-
-    if (value == null || value === false) {
-      element.removeAttribute(name)
+function updateAttr(element, attributes) {
+  for (let key in attributes) {
+    let value = attributes[key]
+    if (!value) {
+      node.removeAttribute(key)
+    } else if (key === 'style') {
+      node.style.cssText = value
+    } else if (typeof value === 'function') {
+      element[key] = value
+    } else {
+      element.setAttribute(key, value)
     }
   }
 }
 
 // test code
 
-let vdom1 = h("div", {}, [
-  h("h1", {}, 0),
-  h("button", { }, "-"),
-  h("button", { }, "+")
-])
+// let vdom1 = h("div", {}, [
+//   h("h1", {}, 0),
+//   h("button", { }, "-"),
+//   h("button", { }, "+")
+// ])
 
-let vdom2 = h("div", {}, [
-  h("h1", {}, 1),
-  h("button", { key: 'hashKey' }, "-"),
-  h("ul", {}, [
-    h("li", {}, 'test'),
-    h('li', {}, 'test2')
-  ])
-])
+// let vdom2 = h("div", {}, [
+//   h("h1", {}, 1),
+//   h("button", { key: 'hashKey' }, "-"),
+//   h("ul", {}, [
+//     h("li", {}, 'test'),
+//     h('li', {}, 'test2')
+//   ])
+// ])
 
-let compare = diff(vdom1, vdom2)
+// let compare = diff(vdom1, vdom2)
 
-console.log(compare)
+// console.log(compare)

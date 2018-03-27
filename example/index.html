@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script src="../src/index.js"></script>
+  <script>
+    let vdom1 = h("div", {}, [
+      h("h1", {}, 0),
+      h("button", { }, "-"),
+      h("button", { }, "+")
+    ])
+
+    let root = vdom1.render()
+
+    let vdom2 = h("div", {}, [
+      h("h1", {}, 1),
+      h("button", { key: 'hashKey' }, "-"),
+      h("ul", {}, [
+        h("li", {}, 'test'),
+        h('li', {}, 'test2')
+      ])
+    ])
+
+    let patches = diff(vdom1, vdom2)
+
+    patch(root, patches)
+  </script>
+</body>
+</html>
