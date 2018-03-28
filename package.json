@@ -1,0 +1,29 @@
+{
+  "name": "learn-virtual-dom",
+  "version": "1.0.0",
+  "description": "simple virtual-dom",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "parcel ./example/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiberJe/learn-virtual-dom.git"
+  },
+  "keywords": [
+    "virtual-dom",
+    "vdom"
+  ],
+  "author": "JeLewine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LiberJe/learn-virtual-dom/issues"
+  },
+  "homepage": "https://github.com/LiberJe/learn-virtual-dom#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.6.2"
+  }
+}
