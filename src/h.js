@@ -3,7 +3,8 @@ class Element {
   constructor (tagName, attributes, children) {
     this.tagName = tagName
     this.attributes = attributes || {}
-    this.children = children || []
+    this.children = children
+    this.key = attributes && attributes.key
   }
 
   render () {
@@ -26,4 +27,4 @@ class Element {
   }
 }
 
-export default {}
+export default (tagName, attributes, children) => new Element(tagName, attributes, children)

@@ -1,3 +1,40 @@
 import nova from "../src/index.js"
 
-const { element, diff, patch } = nova
+const { h, diff, patch } = nova
+
+let vdom1 = h("div", {}, [
+  h("h1", {}, 0),
+  h("button", { }, "-"),
+  h("button", { }, "+"),
+  h("ul", {}, [
+    h("li", { key: 'a' }, 'a'),
+    h('li', { key: 'b' }, 'b'),
+    h("li", { key: 'c' }, 'c'),
+    h('li', { key: 'd' }, 'd'),
+  ])
+])
+
+let vdom2 = h("div", {}, [
+  h("h1", {}, 1),
+  h("button", { props: 'hashKey' }, "-"),
+  h("button", { }, "+"),
+  h("ul", {}, [
+    h("li", { key: 'a' }, 'a'),
+    h('li', { key: 'b' }, 'b'),
+    h('li', { key: 'd' }, 'd'),
+    h("li", { key: 'c' }, 'c'),
+  ])
+])
+
+console.log(vdom1, vdom2)
+
+let patches = diff(vdom1, vdom2)
+
+console.log(patches)
+
+
+// let root = vdom1.render()
+
+// patch(root, patches)
+
+// document.body.appendChild(root)

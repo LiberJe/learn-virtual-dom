@@ -1,9 +1,9 @@
-import element from "./element"
+import h from "./h"
 import diff from "./diff"
 import patch from "./patch";
 
 export default {
-  element,
+  h,
   diff,
   patch,
 }
