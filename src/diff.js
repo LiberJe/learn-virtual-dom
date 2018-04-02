@@ -15,12 +15,13 @@ function dfs(oldNode, newNode, indexObj, patches) {
   let currentIndex = indexObj.index
 
   indexObj.index++
-  // console.log(_.isPrimitive(oldNode), oldNode, _.isPrimitive(newNode), newNode)
-  if (_.isPrimitive(oldNode) && _.isPrimitive(newNode) && oldNode !== newNode) {
-    currentPatch.push({
-      type: _.patchType.TEXT,
-      content: newNode
-    })
+  if (_.isPrimitive(oldNode) && _.isPrimitive(newNode)) {
+    if (oldNode !== newNode) {
+      currentPatch.push({
+        type: _.patchType.TEXT,
+        content: newNode
+      })
+    }
   } else if (oldNode.tagName === newNode.tagName) {
     let attrPatches = diffAttr(oldNode, newNode)
 
@@ -30,7 +31,6 @@ function dfs(oldNode, newNode, indexObj, patches) {
         attr: attrPatches
       })
     }
-
     diffChildren(oldNode.children, newNode.children, indexObj, patches, currentPatch)
 
   } else {
@@ -75,7 +75,12 @@ function diffAttr(oldNode, newNode) {
   return null
 }
 
-function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPatch) {
+function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
+  if (_.isPrimitive(oldNodes) || _.isPrimitive(newNodes)) {
+    dfs(oldNodes, newNodes, indexObj, patches)
+    return
+  }
+
   let oldStartIndex = 0, newStartIndex = 0
   let oldEndIndex = oldNodes.length - 1, newEndIndex = newNodes.length - 1
   let oldStartVnode = oldNodes[0], newStartVnode = newNodes[0]
@@ -94,20 +99,28 @@ function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPa
       newEndVnode = newNodes[--newEndIndex]
     } else if (_.isSameVnode(oldStartVnode, newEndVnode)) {
       dfs(oldStartVnode, newEndVnode, indexObj, patches)
+      currentPatch.push({
+        type: _.patchType.REORDER,
+        act: {
+          type: _.actType.MOVE,
+          start: oldStartIndex,
+          end: -1
+        },
+      })
       oldStartVnode = oldNodes[++oldStartIndex]
       newEndVnode = newNodes[--newEndIndex]
-      currentPatch.push({
-        type: _.patchType.REORDER,
-        move: -1
-      })
     } else if (_.isSameVnode(oldEndVnode, newStartVnode)) {
       dfs(oldEndVnode, newStartVnode, indexObj, patches)
-      oldEndVnode = oldNodes[--oldEndIndex]
-      newStartVnode = newNodes[++newStartIndex]
       currentPatch.push({
         type: _.patchType.REORDER,
-        move: 0
+        act: {
+          type: _.actType.MOVE,
+          start: oldEndIndex,
+          end: 0
+        },
       })
+      oldEndVnode = oldNodes[--oldEndIndex]
+      newStartVnode = newNodes[++newStartIndex]
     } else {
       if (!keyToIndex) {
         keyToIndex = _.mapKeyToIndex(oldNodes, oldStartIndex, oldEndIndex)
@@ -124,7 +137,7 @@ function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPa
       } else {
         let moveNode = oldNodes[index]
 
-        if (moveNode.type !== newStartVnode.type) {
+        if (moveNode.key !== newStartVnode.key) {
           currentPatch.push({
             type: _.patchType.REPLACE,
             node: newStartVnode
@@ -134,7 +147,11 @@ function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPa
           oldNodes[index] = undefined
           currentPatch.push({
             type: _.patchType.REORDER,
-            move: 0,
+            act: {
+              type: _.actType.MOVE,
+              start: index,
+              end: 0
+            },
           })
           newStartVnode = newNodes[++newStartIndex]
         }
@@ -148,7 +165,7 @@ function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPa
           currentPatch.push({
             type: _.patchType.REORDER,
             act: {
-              type: 'add',
+              type: _.actType.ADD,
               node: node,
               move: newNodes[newEndIndex+1] == null ? null : newEndIndex + 1
             },
@@ -162,7 +179,8 @@ function diffChildren(oldNodes = [], newNodes = [], indexObj, patches, currentPa
           currentPatch.push({
             type: _.patchType.REORDER,
             act: {
-              type: 'delete',
+              type: _.actType.DELETE,
+              target: oldStartIndex
             }
           })
         }

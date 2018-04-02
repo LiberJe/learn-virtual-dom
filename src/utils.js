@@ -6,6 +6,12 @@ const patchType = {
   TEXT: 3
 }
 
+const actType = {
+  ADD: 0,
+  MOVE: 1,
+  DELETE: 2
+}
+
 const isArray = Array.isArray
 
 const isPrimitive = input => {
@@ -32,6 +38,7 @@ const mapKeyToIndex = (nodes, begin, end) => {
 
 export default {
   patchType,
+  actType,
   isPrimitive,
   isArray,
   isSameVnode,
