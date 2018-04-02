@@ -29,7 +29,7 @@ const mapKeyToIndex = (nodes, begin, end) => {
   for (let i = begin; i <= end; i++) {
     let node = nodes[i]
     if (node && node.key) {
-      map[key] = i
+      map[node.key] = i
     }
   }
 

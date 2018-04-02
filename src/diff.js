@@ -116,22 +116,26 @@ function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
         act: {
           type: _.actType.MOVE,
           start: oldEndIndex,
-          end: 0
+          end: newStartIndex
         },
       })
       oldEndVnode = oldNodes[--oldEndIndex]
       newStartVnode = newNodes[++newStartIndex]
     } else {
       if (!keyToIndex) {
-        keyToIndex = _.mapKeyToIndex(oldNodes, oldStartIndex, oldEndIndex)
+        keyToIndex = _.mapKeyToIndex(oldNodes, 0, oldNodes.length-1)
       }
 
       let index = keyToIndex[newStartVnode.key]
 
       if (!index) {
         currentPatch.push({
-          type: _.patchType.REPLACE,
-          node: newStartVnode
+          type: _.patchType.REORDER,
+          act: {
+            type: _.actType.ADD,
+            node: newStartVnode,
+            move: oldStartIndex,
+          },
         })
         newStartVnode = newNodes[++newStartIndex]
       } else {
@@ -144,13 +148,12 @@ function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
           })
         } else {
           dfs(moveNode, newStartVnode, indexObj, patches)
-          oldNodes[index] = undefined
           currentPatch.push({
             type: _.patchType.REORDER,
             act: {
               type: _.actType.MOVE,
               start: index,
-              end: 0
+              end: newStartIndex
             },
           })
           newStartVnode = newNodes[++newStartIndex]
@@ -159,7 +162,7 @@ function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
     }
 
     if (oldStartIndex > oldEndIndex) {
-      for (; newStartIndex <= newEndIndex; ++startIdx) {
+      for (; newStartIndex <= newEndIndex; ++newStartIndex) {
         let node = newNodes[newStartIndex]
         if (node) {
           currentPatch.push({

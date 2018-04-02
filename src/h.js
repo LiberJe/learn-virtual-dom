@@ -1,4 +1,6 @@
 
+import _ from "./utils"
+
 class Element {
   constructor (tagName, attributes, children) {
     this.tagName = tagName
@@ -16,7 +18,7 @@ class Element {
       el.setAttribute(attrName, attributes[attrName])
     }
 
-    children.map(child => {
+    [].concat(children).map(child => {
       let childEl = (child instanceof Element)
         ? child.render()
         : document.createTextNode(child)

@@ -19,12 +19,18 @@ let vdom2 = h("div", {}, [
   h("button", { props: 'hashKey' }, "-"),
   h("button", { }, "+"),
   h("ul", {}, [
+    h('li', { key: 'f' }, 'f'),
     h("li", { key: 'a' }, 'a'),
     h('li', { key: 'b' }, 'b'),
     h('li', { key: 'd' }, 'd'),
     h("li", { key: 'c' }, 'c'),
+    h('li', { key: 'e' }, 'e'),
   ])
 ])
+
+let root = vdom1.render()
+
+document.body.appendChild(root)
 
 console.log(vdom1, vdom2)
 
@@ -32,9 +38,6 @@ let patches = diff(vdom1, vdom2)
 
 console.log(patches)
 
-
-// let root = vdom1.render()
-
-// patch(root, patches)
-
-// document.body.appendChild(root)
+setTimeout(() => {
+  patch(root, patches)
+}, 1000)
