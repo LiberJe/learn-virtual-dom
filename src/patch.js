@@ -19,7 +19,7 @@ function dfs(node, patches, indexObj) {
       case _.patchType.REPLACE:
         node.parentNode.replaceChild(patch.node.render(), node)
       case _.patchType.REORDER:
-        // reorderChildren()
+        reorderChildren(node, patch.act)
         break
       case _.patchType.ATTR:
         updateAttr(node, patch.attr)
@@ -33,8 +33,20 @@ function dfs(node, patches, indexObj) {
   })
 }
 
-function reorderChildren() {
-  
+function reorderChildren(element, patch) {
+  switch (patch.type) {
+    case _.actType.ADD:
+      element.insertBefore(patch.node.render(), element.childNodes[patch.move])
+      break
+    case _.actType.MOVE:
+      element.insertBefore(element.childNodes[patch.start], element.childNodes[patch.end])
+      break
+    case _.actType.DELETE:
+      element.removeChild(element.childNodes[patch.target])
+      break
+    default:
+      throw new Error('Unknown patch type ' + currentPatch.type)
+  }
 }
 
 function updateAttr(element, attributes) {
