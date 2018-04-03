@@ -19,7 +19,11 @@ function dfs(node, patches, indexObj) {
       case _.patchType.REPLACE:
         node.parentNode.replaceChild(patch.node.render(), node)
       case _.patchType.REORDER:
-        reorderChildren(node, patch.act)
+        let target = patch.act.target || patch.act.start
+        let currentNode = node.childNodes[target]
+        setTimeout(() => {
+          reorderChildren(node, patch.act, currentNode)
+        }, 0)
         break
       case _.patchType.ATTR:
         updateAttr(node, patch.attr)
@@ -33,16 +37,16 @@ function dfs(node, patches, indexObj) {
   })
 }
 
-function reorderChildren(element, patch) {
+function reorderChildren(element, patch, currentNode) {
   switch (patch.type) {
     case _.actType.ADD:
-      element.insertBefore(patch.node.render(), element.childNodes[patch.move])
+      element.insertBefore(patch.node.render(), element.childNodes[patch.target])
       break
     case _.actType.MOVE:
-      element.insertBefore(element.childNodes[patch.start], element.childNodes[patch.end])
+      element.insertBefore(currentNode, element.childNodes[patch.end])
       break
     case _.actType.DELETE:
-      element.removeChild(element.childNodes[patch.target])
+      element.removeChild(currentNode)
       break
     default:
       throw new Error('Unknown patch type ' + currentPatch.type)

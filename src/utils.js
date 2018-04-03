@@ -9,7 +9,7 @@ const patchType = {
 const actType = {
   ADD: 0,
   MOVE: 1,
-  DELETE: 2
+  DELETE: 2,
 }
 
 const isArray = Array.isArray

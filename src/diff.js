@@ -134,7 +134,7 @@ function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
           act: {
             type: _.actType.ADD,
             node: newStartVnode,
-            move: oldStartIndex,
+            target: newStartIndex,
           },
         })
         newStartVnode = newNodes[++newStartIndex]
@@ -170,7 +170,7 @@ function diffChildren(oldNodes, newNodes, indexObj, patches, currentPatch) {
             act: {
               type: _.actType.ADD,
               node: node,
-              move: newNodes[newEndIndex+1] == null ? null : newEndIndex + 1
+              target: newNodes[newEndIndex+1] == null ? null : newEndIndex + 1
             },
           })
         }

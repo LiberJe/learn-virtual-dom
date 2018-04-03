@@ -19,10 +19,10 @@ let vdom2 = h("div", {}, [
   h("button", { props: 'hashKey' }, "-"),
   h("button", { }, "+"),
   h("ul", {}, [
-    // h('li', { key: 'f' }, 'f'),
+    h('li', { key: 'f' }, 'f'),
     h("li", { key: 'a' }, 'a'),
     h('li', { key: 'b' }, 'b'),
-    // h('li', { key: 'd' }, 'd'),
+    h('li', { key: 'd' }, 'd'),
     h("li", { key: 'c' }, 'c'),
     h('li', { key: 'e' }, 'e'),
   ])
@@ -38,6 +38,4 @@ let patches = diff(vdom1, vdom2)
 
 console.log(patches)
 
-setTimeout(() => {
-  patch(root, patches)
-}, 1000)
+patch(root, patches)
